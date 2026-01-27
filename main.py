@@ -9,7 +9,8 @@ import chromadb
 from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 
-from config import DATA_PATH, EMBEDDING_MODEL_NAME
+# from config import DATA_PATH, EMBEDDING_MODEL_NAME
+from config import settings
 from src.document_processor import DocumentProcessor
 from src.embedding_generation import EmbeddingEngine
 from src.semantic_router import SemanticRouter
@@ -26,7 +27,7 @@ async def lifespan(app: FastAPI):
     print("--- Initializing Systems ---")
     
     # 1. Initialize Embedding Engine
-    ee = EmbeddingEngine(EMBEDDING_MODEL_NAME)
+    ee = EmbeddingEngine(settings.EMBEDDING_MODEL_NAME)
     
     # 2. Get Path from Environment Variable (ECS setup)
     # Default to local path for testing, but use EFS path in production
