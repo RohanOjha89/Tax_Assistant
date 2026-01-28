@@ -1,3 +1,10 @@
+import os
+import json
+import boto3
+from botocore.exceptions import ClientError
+# This is the line that was missing:
+from pydantic_settings import BaseSettings
+
 class Settings(BaseSettings):
     # --- Secrets/Env Vars ---
     # Renamed to API_KEY to match your AWS Secret key and calling code
