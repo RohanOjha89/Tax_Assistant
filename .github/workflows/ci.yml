@@ -10,7 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      PYTHONPATH: .
+      PYTHONPATH: ./:./dags
       # Tell your code it's in a test environment
       ENV: test 
     steps:
@@ -29,11 +29,11 @@ jobs:
           # Ensure requirements.txt includes pysqlite3-binary
           pip install -r requirements.txt
           pip install pytest unittest-xml-reporting
-
+      
       - name: Run Pytest
         env:
-          PYTHONPATH: ${{ github.workspace }}
           CHROMA_DB_PATH: ./test_chroma_db
+          ENV: test
         run: pytest tests/tax_assistant_pytest.py
 
       - name: Run Unittests
