@@ -9,7 +9,8 @@ import chromadb
 from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 
-from config import DATA_PATH, EMBEDDING_MODEL_NAME
+# from config import DATA_PATH, EMBEDDING_MODEL_NAME
+from config import settings
 from src.document_processor import DocumentProcessor
 from src.embedding_generation import EmbeddingEngine
 from src.semantic_router import SemanticRouter
@@ -20,31 +21,20 @@ components = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Handles startup and shutdown. This is where we initialize ChromaDB.
-    """
     print("--- Initializing Systems ---")
     
-    # 1. Initialize Embedding Engine
-    ee = EmbeddingEngine(EMBEDDING_MODEL_NAME)
+    ee = EmbeddingEngine(settings.EMBEDDING_MODEL_NAME)
     
-    # 2. Get Path from Environment Variable (ECS setup)
-    # Default to local path for testing, but use EFS path in production
-    db_path = os.getenv("CHROMA_DB_PATH", "./chroma_db")
-    print(f"--- Connecting to ChromaDB at: {db_path} ---")
+    # Use the path and collection name from settings to stay consistent
+    chroma_client = chromadb.PersistentClient(path=settings.CHROMA_PATH)
+    collection = chroma_client.get_or_create_collection(name=settings.COLLECTION_NAME)
     
-    # 3. Initialize ChromaDB Persistent Client
-    # Chroma stores data in the './chroma_db' folder by default
-    chroma_client = chromadb.PersistentClient(path=db_path)
-    collection = chroma_client.get_or_create_collection(name="tax_docs")
-    
-    # 4. Store in lifespan state
     components["router"] = SemanticRouter()
-    components["rag"] = RAGPipeline(collection, ee) # Update RAGPipeline to accept Chroma collection
+    # This now matches the updated RAGPipeline __init__
+    components["rag"] = RAGPipeline(collection, ee) 
     components["ee"] = ee
     
     yield
-    # Clean up on shutdown if necessary
     components.clear()
 
 app = FastAPI(lifespan=lifespan)
