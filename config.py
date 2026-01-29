@@ -17,7 +17,7 @@ def get_aws_secret(secret_name, region_name="us-east-1"):
 
 class Settings(BaseSettings):
     # --- Secrets/Env Vars ---
-    API_KEY: str = os.getenv("OPENAI_API_KEY", "") 
+    API_KEY: str = os.getenv("API_KEY", "") 
     ROUTER_MODEL: str = os.getenv("ROUTER_MODEL", "gpt-4o-mini")
     SIMPLE_MODEL: str = os.getenv("SIMPLE_MODEL", "gpt-4o-mini")
     COMPLEX_MODEL: str = os.getenv("COMPLEX_MODEL", "gpt-4o")
