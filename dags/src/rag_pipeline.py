@@ -9,38 +9,25 @@ import chromadb
 from config import settings
 
 class RAGPipeline:
-    def __init__(self, embedding_engine):
+        
+    def __init__(self, collection, embedding_engine):
         # API_KEY is now pulled from settings (which pulls from AWS Secrets)
         self.client = OpenAI(api_key=settings.API_KEY)
         self.ee = embedding_engine
-        
-        # Initialize Chroma Client pointing to our EFS path
-        self.chroma_client = chromadb.PersistentClient(path=settings.CHROMA_PATH)
-        self.collection = self.chroma_client.get_or_create_collection(name=settings.COLLECTION_NAME)
+        self.collection = collection
 
     def retrieve(self, query: str, k: int = 3):
-        """
-        Retrieves the most relevant chunks from the persistent ChromaDB.
-        """
         # 1. Generate embedding for the search query
         query_vec = self.ee.generate([query])
         
         # 2. Query the collection (using standard list format for vectors)
-        results = self.collection.query(
-            query_embeddings=query_vec.tolist(), 
-            n_results=k
-        )
+        results = self.collection.query(query_embeddings=query_vec.tolist(), n_results=k)
     
         # 3. Join retrieved documents into a single context string
-        # Chroma returns a list of lists, so we take the first element [0]
         context = " ".join(results['documents'][0])
         return context
 
     def generate_response(self, query, context, model_choice="SIMPLE"):
-        """
-        Uses OpenAI to generate a grounded answer based on the retrieved context.
-        """
-        # Select model from centralized settings
         model = settings.SIMPLE_MODEL if model_choice == "SIMPLE" else settings.COMPLEX_MODEL
         
         prompt = (
@@ -52,7 +39,5 @@ class RAGPipeline:
         
         response = self.client.chat.completions.create(
             model=model, 
-            messages=[{"role": "system", "content": "You are a professional tax advisor."},
-                      {"role": "user", "content": prompt}]
-        )
+            messages=[{"role": "system", "content": "You are a professional tax advisor."}, {"role": "user", "content": prompt}])
         return response.choices[0].message.content
