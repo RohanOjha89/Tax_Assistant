@@ -17,9 +17,10 @@ chromadb>=0.4.0
 pysqlite3-binary  # Fixes the SQLite version issue for ChromaDB on Linux
 
 # --- Data Processing ---
+numpy==1.26.4
+pandas==2.1.4
 pypdf
 sentence-transformers
-numpy
 
 # --- Testing ---
 pytest

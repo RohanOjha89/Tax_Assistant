@@ -4,23 +4,35 @@ FROM apache/airflow:2.7.2-python3.11
 USER root
 
 # Install system dependencies (libpq-dev is for Postgres)
-RUN apt-get update && apt-get install -y build-essential gcc libpq-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create the ChromaDB directory. 
 # CRITICAL: We set the ownership to 'airflow' so the EFS mount is writable.
 RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 
+# Copy config.py (if it's in your root) to the airflow home so it's accessible
+COPY --chown=airflow:root config.py /opt/airflow/config.py
+
 USER airflow
 
-# Set PYTHONPATH
+# Set PYTHONPATH to include the root /opt/airflow (for config.py) 
+# and /opt/airflow/dags (for your DAGs)
 ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow:/opt/airflow/dags"
 
-# 1. Force install compatible numpy/pandas first
-# This solves the "numpy.dtype size changed" error
-RUN pip install --no-cache-dir --user "numpy==1.26.4" "pandas==2.1.4"
+# 1. Update pip and force install compatible numpy/pandas first.
+# Using --force-reinstall ensures that even if the base image has a different version,
+# we get the specific binary-compatible versions we need.
+RUN pip install --no-cache-dir --user --upgrade pip && \
+    pip install --no-cache-dir --user "numpy==1.26.4" "pandas==2.1.4"
 
-# 2. Copy requirements and install the rest
-COPY requirements.txt /requirements.txt
+# 2. Copy requirements and install the rest.
+# The user-level install matches the Airflow container's permission model.
+COPY --chown=airflow:root requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --user -r /requirements.txt
 
 # 3. Copy DAGs folder
