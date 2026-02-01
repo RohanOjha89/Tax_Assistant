@@ -13,7 +13,7 @@ RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 USER airflow
 
 # Set PYTHONPATH
-ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/dags"
+ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow:/opt/airflow/dags"
 
 # 1. Force install compatible numpy/pandas first
 # This solves the "numpy.dtype size changed" error
