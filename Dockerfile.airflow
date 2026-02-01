@@ -15,12 +15,15 @@ USER airflow
 # Set PYTHONPATH
 ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/dags"
 
-# Copy requirements and install
+# 1. Force install compatible numpy/pandas first
+# This solves the "numpy.dtype size changed" error
+RUN pip install --no-cache-dir --user "numpy==1.26.4" "pandas==2.1.4"
+
+# 2. Copy requirements and install the rest
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --user -r /requirements.txt
 
-# Copy DAGs folder
+# 3. Copy DAGs folder
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
 
-# Expose Airflow Webserver port
 EXPOSE 8080
