@@ -3,9 +3,9 @@ numpy
 pandas
 email-validator
 
-# --- API & ORCHESTRATION (DOWNGRADED FOR AIRFLOW COMPATIBILITY) ---
-# FastAPI 0.103.1 is the "sweet spot" that works with older Pydantic/Email-Validator
-fastapi==0.103.1
+# --- API & ORCHESTRATION ---
+# 0.109.1 is the bridge version that supports AnyIO 4.0.0
+fastapi==0.109.1
 uvicorn[standard]>=0.27.0
 pydantic-settings
 python-dotenv>=1.0.0
@@ -30,7 +30,7 @@ sentence-transformers
 apache-airflow[amazon,postgres]==2.7.2
 apache-airflow-providers-postgres
 psycopg2-binary>=2.9.0
-boto3
+boto3>=1.30.0
 
 # --- TESTING ---
 pytest
