@@ -3,13 +3,17 @@ FROM apache/airflow:2.7.2-python3.11
 
 USER root
 
-# 1. Added python3-dev and g++ (REQUIRED for building numpy/pandas from source)
+# 1. Added math libraries (libopenblas-dev, liblapack-dev) 
+# and pkg-config. These are mandatory for building NumPy from source.
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
     g++ \
     python3-dev \
     libpq-dev \
+    libopenblas-dev \
+    liblapack-dev \
+    pkg-config \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -17,11 +21,16 @@ RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 
 USER airflow
 
-# 2. Fixed the "UndefinedVar" warning with the :- syntax
-ENV PYTHONPATH="/opt/airflow:/opt/airflow/dags:${PYTHONPATH:-}"
+# 2. FIXED: Declare the variable explicitly to satisfy the GitHub Actions linter.
+# This prevents the "UndefinedVar" warning entirely.
+ARG PYTHONPATH=""
+ENV PYTHONPATH="/opt/airflow:/opt/airflow/dags:${PYTHONPATH}"
 
-# 3. This will now work because we have the compilers (g++ / python3-dev)
-RUN pip install --no-cache-dir --user --force-reinstall \
+# 3. Use --no-cache-dir and ensure pip is current.
+# Building from source is memory-intensive; we add --verbose so you can 
+# see exactly where it fails if the GitHub runner runs out of RAM.
+RUN pip install --no-cache-dir --user --upgrade pip && \
+    pip install --no-cache-dir --user --force-reinstall \
     --no-binary numpy,pandas \
     "numpy==1.26.4" "pandas==2.1.4"
 
