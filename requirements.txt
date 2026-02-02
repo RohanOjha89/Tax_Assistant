@@ -1,25 +1,25 @@
-# --- THE "LOCK": PROTECTED BY CONSTRAINTS ---
+# --- CORE LIBS (Let these be handled by constraints pass) ---
 numpy
 pandas
 email-validator
+typing-extensions
 
 # --- API & ORCHESTRATION ---
-# 0.109.1 is the bridge version that supports AnyIO 4.0.0
-fastapi==0.109.1
-uvicorn[standard]>=0.27.0
+fastapi
+uvicorn[standard]
 pydantic-settings
-python-dotenv>=1.0.0
+python-dotenv
 
 # --- LANGCHAIN & LLM ---
-openai>=1.50.0
-langchain>=0.3.0
+openai
+langchain
 langchain-openai
 langchain-community
 langchain_text_splitters
 langchain-chroma
 
 # --- VECTOR DATABASE ---
-chromadb>=0.4.0
+chromadb
 pysqlite3-binary
 
 # --- DATA PROCESSING ---
@@ -29,7 +29,7 @@ sentence-transformers
 # --- AIRFLOW & INFRASTRUCTURE ---
 apache-airflow[amazon,postgres]==2.7.2
 apache-airflow-providers-postgres
-psycopg2-binary>=2.9.0
+psycopg2-binary
 boto3
 
 # --- TESTING ---
