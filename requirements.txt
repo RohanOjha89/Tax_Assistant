@@ -1,5 +1,5 @@
 # --- CORE LIBS (Let these be handled by constraints pass) ---
-numpy==1.24.3
+numpy==1.24.4
 pandas==2.0.3
 email-validator
 typing-extensions
