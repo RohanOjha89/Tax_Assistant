@@ -32,7 +32,7 @@ sentence-transformers
 apache-airflow[amazon,postgres]==2.7.2
 apache-airflow-providers-postgres
 psycopg2-binary>=2.9.0
-boto3>=1.30.0
+boto3
 
 # --- TESTING ---
 pytest
