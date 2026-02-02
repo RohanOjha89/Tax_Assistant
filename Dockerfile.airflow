@@ -22,9 +22,14 @@ ENV PYTHONPATH="/opt/airflow:/opt/airflow/dags:${PYTHONPATH}"
 # Install requirements using the official Airflow constraints
 COPY --chown=airflow:root requirements.txt /requirements.txt
 
+# Step 1: Install all requirements with constraints
 RUN pip install --no-cache-dir --user --upgrade pip && \
     pip install --no-cache-dir --user -r /requirements.txt \
     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
+
+# Step 2: Force pandas reinstall to match the numpy that's now installed
+RUN pip uninstall -y pandas && \
+    pip install --no-cache-dir --user --force-reinstall --no-binary :all: pandas==2.0.3
 
 # Copy DAGs last (they change most frequently, so we keep this layer at the bottom)
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
