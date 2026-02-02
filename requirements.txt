@@ -1,13 +1,13 @@
 # --- THE "LOCK": PROTECTED BY CONSTRAINTS ---
-# We remove the version numbers so they match the Airflow constraints file
 numpy
 pandas
 email-validator
 
-# --- API & ORCHESTRATION ---
-fastapi>=0.110.0
+# --- API & ORCHESTRATION (DOWNGRADED FOR AIRFLOW COMPATIBILITY) ---
+# FastAPI 0.103.1 is the "sweet spot" that works with older Pydantic/Email-Validator
+fastapi==0.103.1
 uvicorn[standard]>=0.27.0
-pydantic-settings>=2.2.0
+pydantic-settings
 python-dotenv>=1.0.0
 
 # --- LANGCHAIN & LLM ---
@@ -26,9 +26,7 @@ pysqlite3-binary
 pypdf
 sentence-transformers
 
-# --- AIRFLOW & INFRASTRUCTURE (EXPLICIT) ---
-# Installing the extras automatically brings in boto3 and psycopg2, 
-# but we list them below for safety.
+# --- AIRFLOW & INFRASTRUCTURE ---
 apache-airflow[amazon,postgres]==2.7.2
 apache-airflow-providers-postgres
 psycopg2-binary>=2.9.0
