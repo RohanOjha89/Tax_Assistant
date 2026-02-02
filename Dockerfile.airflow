@@ -27,8 +27,7 @@ ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow:/opt/airflow/dags"
 # 1. Update pip and force install compatible numpy/pandas first.
 # Using --force-reinstall ensures that even if the base image has a different version,
 # we get the specific binary-compatible versions we need.
-RUN pip install --no-cache-dir --user --upgrade pip && \
-    pip install --no-cache-dir --user "numpy==1.26.4" "pandas==2.1.4"
+RUN pip install --no-cache-dir --user --force-reinstall --no-binary numpy,pandas "numpy==1.26.4" "pandas==2.1.4"
 
 # 2. Copy requirements and install the rest.
 # The user-level install matches the Airflow container's permission model.

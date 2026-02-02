@@ -1,3 +1,6 @@
+import numpy as np
+print(f"DEBUG: Current NumPy version is {np.__version__}")
+
 import sys
 # MUST be at the very top for ChromaDB compatibility in Fargate
 __import__('pysqlite3')
