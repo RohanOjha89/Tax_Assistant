@@ -2,41 +2,31 @@
 FROM apache/airflow:2.7.2-python3.11
 
 USER root
-
-# 1. Added math libraries (libopenblas-dev, liblapack-dev) 
-# and pkg-config. These are mandatory for building NumPy from source.
+# Basic dependencies only
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    g++ \
-    python3-dev \
-    libpq-dev \
-    libopenblas-dev \
-    liblapack-dev \
-    pkg-config \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential gcc libpq-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Setup persistence directory
 RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
+
+# Copy config.py to the root so 'import config' works via PYTHONPATH
+COPY --chown=airflow:root config.py /opt/airflow/config.py
 
 USER airflow
 
-# 2. FIXED: Declare the variable explicitly to satisfy the GitHub Actions linter.
-# This prevents the "UndefinedVar" warning entirely.
+# Initialize PYTHONPATH properly
 ARG PYTHONPATH=""
 ENV PYTHONPATH="/opt/airflow:/opt/airflow/dags:${PYTHONPATH}"
 
-# 3. Use --no-cache-dir and ensure pip is current.
-# Building from source is memory-intensive; we add --verbose so you can 
-# see exactly where it fails if the GitHub runner runs out of RAM.
-RUN pip install --no-cache-dir --user --upgrade pip && \
-    pip install --no-cache-dir --user --force-reinstall \
-    --no-binary numpy,pandas \
-    "numpy==1.26.4" "pandas==2.1.4"
-
+# Install requirements using the official Airflow constraints
 COPY --chown=airflow:root requirements.txt /requirements.txt
-RUN pip install --no-cache-dir --user -r /requirements.txt
 
+RUN pip install --no-cache-dir --user --upgrade pip && \
+    pip install --no-cache-dir --user -r /requirements.txt \
+    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
+
+# Copy DAGs last (they change most frequently, so we keep this layer at the bottom)
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
 
 EXPOSE 8080

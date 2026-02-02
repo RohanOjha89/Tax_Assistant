@@ -1,34 +1,37 @@
-# --- API & Orchestration ---
-fastapi>=0.110.0
-uvicorn[standard]>=0.27.0
-pydantic-settings>=2.2.0
-python-dotenv>=1.0.0
+# --- CORE LIBS (Let these be handled by constraints pass) ---
+numpy
+pandas
+email-validator
+typing-extensions
 
-# --- LangChain & LLM ---
-openai>=1.50.0
-langchain>=0.3.0
+# --- API & ORCHESTRATION ---
+fastapi
+uvicorn[standard]
+pydantic-settings
+python-dotenv
+
+# --- LANGCHAIN & LLM ---
+openai
+langchain
 langchain-openai
 langchain-community
 langchain_text_splitters
-langchain-chroma  # Specialized wrapper for ChromaDB
+langchain-chroma
 
-# --- Vector Database ---
-chromadb>=0.4.0
-pysqlite3-binary  # Fixes the SQLite version issue for ChromaDB on Linux
+# --- VECTOR DATABASE ---
+chromadb
+pysqlite3-binary
 
-# --- Data Processing ---
-numpy==1.26.4
-pandas==2.1.4
+# --- DATA PROCESSING ---
 pypdf
 sentence-transformers
 
-# --- Testing ---
-pytest
-httpx  # Required for FastAPI's TestClient
-
-# --- AWS Specific ---
-apache-airflow[amazon]
-apache-airflow[postgres]
+# --- AIRFLOW & INFRASTRUCTURE ---
+apache-airflow[amazon,postgres]==2.7.2
 apache-airflow-providers-postgres
 psycopg2-binary
 boto3
+
+# --- TESTING ---
+pytest
+httpx
