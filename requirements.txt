@@ -1,20 +1,22 @@
-# --- CORE LIBS (Let these be handled by constraints pass) ---
-# numpy==1.24.4
-# pandas==2.1.1
+# --- CORE LIBS (Let constraints handle the exact sub-version) ---
+numpy
+pandas
 email-validator
 typing-extensions
 
 # --- API & ORCHESTRATION ---
-fastapi
+# 0.109.1 is the specific version that supports AnyIO 4.0.0 (required by Airflow 2.7.2)
+fastapi==0.109.1
 uvicorn[standard]
 pydantic-settings
 python-dotenv
 
 # --- LANGCHAIN & LLM ---
 openai
-langchain
+# Capping these is CRITICAL to stay on NumPy 1.x and Pydantic < 2.7
+langchain<0.3.0
 langchain-openai
-langchain-community
+langchain-community<0.3.0
 langchain_text_splitters
 langchain-chroma
 
