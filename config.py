@@ -27,7 +27,7 @@ def get_aws_secret(secret_name, region_name="us-east-1"):
 
 class Settings(BaseSettings):
     # --- Secrets/Env Vars ---
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    API_KEY: str = os.getenv("API_KEY", "")
     ROUTER_MODEL: str = os.getenv("ROUTER_MODEL", "gpt-4.1-nano")
     SIMPLE_MODEL: str = os.getenv("SIMPLE_MODEL", "gpt-4.1-nano")
     COMPLEX_MODEL: str = os.getenv("COMPLEX_MODEL", "gpt-4.1-mini")
@@ -41,7 +41,7 @@ class Settings(BaseSettings):
 
     def __init__(self, **values):
         super().__init__(**values)
-        if os.getenv("ENV") == "prod" and not self.OPENAI_API_KEY:
+        if os.getenv("ENV") == "prod" and not self.API_KEY:
             aws_secrets = get_aws_secret("prod/tax_assistant/config")
             for key, value in aws_secrets.items():
                 if hasattr(self, key):
@@ -50,7 +50,10 @@ class Settings(BaseSettings):
 # Create a single instance
 settings = Settings()
 
-# --- 4. EXPLICIT EXPORTS (Fixes "ImportError: cannot import name X from config") ---
+# --- 4. EXPLICIT EXPORTS ---
+# These ensure both the tests AND your app modules find what they need
+API_KEY = settings.API_KEY
+OPENAI_API_KEY = settings.API_KEY
 CHROMA_PATH = settings.CHROMA_PATH
 COLLECTION_NAME = settings.COLLECTION_NAME
 DATA_PATH = settings.DATA_PATH
