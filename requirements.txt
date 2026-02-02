@@ -1,9 +1,9 @@
 # --- THE "LOCK": PROTECT BINARY COMPATIBILITY ---
-# These MUST be at the top to prevent LangChain from upgrading them
 numpy==1.26.4
 pandas==2.1.4
 
 # --- API & ORCHESTRATION ---
+email-validator>=2.0.0  # <--- ADD THIS HERE
 fastapi>=0.110.0
 uvicorn[standard]>=0.27.0
 pydantic-settings>=2.2.0
