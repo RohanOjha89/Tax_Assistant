@@ -1,23 +1,4 @@
-import numpy as np
-print(f"DEBUG: Current NumPy version is {np.__version__}")
-
 import sys
-<<<<<<< HEAD
-# MUST be at the very top for ChromaDB compatibility in Fargate
-__import__('pysqlite3')
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
-import boto3
-from airflow.decorators import dag, task
-from datetime import datetime
-import os
-import chromadb
-from src.document_processor import DocumentProcessor
-from src.embedding_generation import EmbeddingEngine
-# config.py should point CHROMA_PATH to "/opt/airflow/chroma_db"
-# from config import CHROMA_PATH, COLLECTION_NAME
-from config import settings
-=======
 import os
 from datetime import datetime
 from airflow.decorators import dag, task
@@ -28,7 +9,6 @@ try:
     sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 except ImportError:
     pass
->>>>>>> df1c26c (Modified all the files)
 
 @dag(
     dag_id='tax_doc_ingestion_dag',

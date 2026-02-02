@@ -28,5 +28,3 @@ ENV PYTHONPATH="/app"
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
-
-# (Keep your healthcheck and CMD as they were)

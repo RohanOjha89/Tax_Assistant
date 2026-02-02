@@ -2,34 +2,14 @@
 FROM apache/airflow:2.7.2-python3.11
 
 USER root
-<<<<<<< HEAD
-# Basic dependencies only
-RUN apt-get update && apt-get install -y \
-    build-essential gcc libpq-dev \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-=======
 # Basic dependencies
 RUN apt-get update && apt-get install -y build-essential gcc libpq-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
->>>>>>> df1c26c (Modified all the files)
 
 # Setup persistence directory
 RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 
-# Copy config.py to the root so 'import config' works via PYTHONPATH
-COPY --chown=airflow:root config.py /opt/airflow/config.py
-
 USER airflow
 
-<<<<<<< HEAD
-# Initialize PYTHONPATH properly
-ARG PYTHONPATH=""
-ENV PYTHONPATH="/opt/airflow:/opt/airflow/dags:${PYTHONPATH}"
-
-# Install requirements using the official Airflow constraints
-COPY --chown=airflow:root requirements.txt /requirements.txt
-
-# Install all dependencies with constraints
-=======
 # FIXED: Explicitly declare PYTHONPATH to avoid the UndefinedVar warning in CI
 ARG PYTHONPATH=""
 ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
@@ -39,20 +19,11 @@ COPY requirements.txt /requirements.txt
 
 # THE CRITICAL CHANGE: 
 # We use the --constraint flag to force pip to stick to Airflow-compatible versions.
->>>>>>> df1c26c (Modified all the files)
 RUN pip install --no-cache-dir --user --upgrade pip && \
     pip install --no-cache-dir --user -r /requirements.txt \
     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
 
-<<<<<<< HEAD
-# Force reinstall both numpy and pandas to ensure they're compatible
-RUN pip uninstall -y numpy pandas && \
-    pip install --no-cache-dir --user numpy==1.24.4 pandas==2.0.3 --force-reinstall
-
-# Copy DAGs last (they change most frequently, so we keep this layer at the bottom)
-=======
 # Copy DAGs
->>>>>>> df1c26c (Modified all the files)
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
 
 EXPOSE 8080

@@ -15,12 +15,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 
-<<<<<<< HEAD
-# from config import DATA_PATH, EMBEDDING_MODEL_NAME
-from config import settings
-=======
 # 4. CUSTOM MODULES LAST: They depend on everything above
->>>>>>> df1c26c (Modified all the files)
 from src.document_processor import DocumentProcessor
 from src.embedding_generation import EmbeddingEngine
 from src.semantic_router import SemanticRouter
@@ -32,17 +27,6 @@ components = {}
 async def lifespan(app: FastAPI):
     print("--- Initializing Systems ---")
     
-<<<<<<< HEAD
-    ee = EmbeddingEngine(settings.EMBEDDING_MODEL_NAME)
-    
-    # Use the path and collection name from settings to stay consistent
-    chroma_client = chromadb.PersistentClient(path=settings.CHROMA_PATH)
-    collection = chroma_client.get_or_create_collection(name=settings.COLLECTION_NAME)
-    
-    components["router"] = SemanticRouter()
-    # This now matches the updated RAGPipeline __init__
-    components["rag"] = RAGPipeline(collection, ee) 
-=======
     # Use settings from config.py
     ee = EmbeddingEngine(settings.EMBEDDING_MODEL_NAME)
     
@@ -55,7 +39,6 @@ async def lifespan(app: FastAPI):
     
     components["router"] = SemanticRouter()
     components["rag"] = RAGPipeline(collection, ee)
->>>>>>> df1c26c (Modified all the files)
     components["ee"] = ee
     yield
     components.clear()
