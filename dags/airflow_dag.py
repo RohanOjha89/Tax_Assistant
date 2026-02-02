@@ -14,7 +14,8 @@ import chromadb
 from src.document_processor import DocumentProcessor
 from src.embedding_generation import EmbeddingEngine
 # config.py should point CHROMA_PATH to "/opt/airflow/chroma_db"
-from config import CHROMA_PATH, COLLECTION_NAME
+# from config import CHROMA_PATH, COLLECTION_NAME
+from config import settings
 
 @dag(
     dag_id='tax_doc_ingestion_dag',
