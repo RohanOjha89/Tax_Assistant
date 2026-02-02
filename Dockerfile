@@ -1,35 +1,32 @@
 # --- Stage 1: Build Stage ---
 FROM python:3.11-slim as builder
 
-# ---- Set working directory ----
 WORKDIR /app
 
-# Install system dependencies for C++ extensions (required for FAISS/Weaviate clients)
+# Install system dependencies
 RUN apt-get update && apt-get install -y build-essential gcc && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies into a local folder
 COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
+
+# FIXED: We use the same constraint file here as we did in Airflow!
+# This ensures that both containers are "speaking the same language" (NumPy 1.x).
+RUN pip install --user --no-cache-dir -r requirements.txt \
+    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
 
 # --- Stage 2: Runtime Stage ---
 FROM python:3.11-slim as runner
 
 WORKDIR /app
 
-# Copy only the installed python packages from the builder stage
+# Copy the specific python packages
 COPY --from=builder /root/.local /root/.local
 COPY . .
 
-# Ensure scripts in .local/bin are usable
+# IMPORTANT: Ensure your PATH and PYTHONPATH are clean
 ENV PATH=/root/.local/bin:$PATH
+ENV PYTHONPATH="/app"
 ENV PYTHONUNBUFFERED=1
 
-# FastAPI default port
 EXPOSE 8000
 
-# Healthcheck for FastAPI
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8000/health || exit 1
-
-# Command to run FastAPI using Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# (Keep your healthcheck and CMD as they were)

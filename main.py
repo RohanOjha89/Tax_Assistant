@@ -1,28 +1,38 @@
 import sys
-# This makes ChromaDB use the newer pysqlite3 instead of the system sqlite3
-__import__('pysqlite3')
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# 1. THE ABSOLUTE FIRST STEP: SQLite Patch
+try:
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass 
 
+# 2. LOAD CONFIG FIRST: This forces Pydantic to validate the environment early
+from config import settings 
+
+# 3. NOW IMPORT HEAVY LIBS: Chroma, FastAPI, etc.
 import chromadb
 import os
-import chromadb
 from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 
+<<<<<<< HEAD
 # from config import DATA_PATH, EMBEDDING_MODEL_NAME
 from config import settings
+=======
+# 4. CUSTOM MODULES LAST: They depend on everything above
+>>>>>>> df1c26c (Modified all the files)
 from src.document_processor import DocumentProcessor
 from src.embedding_generation import EmbeddingEngine
 from src.semantic_router import SemanticRouter
 from src.rag_pipeline import RAGPipeline
 
-# Global variables to hold our heavy objects
 components = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("--- Initializing Systems ---")
     
+<<<<<<< HEAD
     ee = EmbeddingEngine(settings.EMBEDDING_MODEL_NAME)
     
     # Use the path and collection name from settings to stay consistent
@@ -32,8 +42,21 @@ async def lifespan(app: FastAPI):
     components["router"] = SemanticRouter()
     # This now matches the updated RAGPipeline __init__
     components["rag"] = RAGPipeline(collection, ee) 
-    components["ee"] = ee
+=======
+    # Use settings from config.py
+    ee = EmbeddingEngine(settings.EMBEDDING_MODEL_NAME)
     
+    # Ensure we use the path from our settings object
+    db_path = settings.CHROMA_PATH
+    print(f"--- Connecting to ChromaDB at: {db_path} ---")
+    
+    chroma_client = chromadb.PersistentClient(path=db_path)
+    collection = chroma_client.get_or_create_collection(name=settings.COLLECTION_NAME)
+    
+    components["router"] = SemanticRouter()
+    components["rag"] = RAGPipeline(collection, ee)
+>>>>>>> df1c26c (Modified all the files)
+    components["ee"] = ee
     yield
     components.clear()
 
