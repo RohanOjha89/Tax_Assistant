@@ -1,3 +1,8 @@
+import sys
+# This must happen BEFORE importing chromadb
+__import__('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 import os
 import json
 import boto3
@@ -18,9 +23,9 @@ def get_aws_secret(secret_name, region_name="us-east-1"):
 class Settings(BaseSettings):
     # --- Secrets/Env Vars ---
     API_KEY: str = os.getenv("API_KEY", "") 
-    ROUTER_MODEL: str = os.getenv("ROUTER_MODEL", "gpt-4o-mini")
-    SIMPLE_MODEL: str = os.getenv("SIMPLE_MODEL", "gpt-4o-mini")
-    COMPLEX_MODEL: str = os.getenv("COMPLEX_MODEL", "gpt-4o")
+    ROUTER_MODEL: str = os.getenv("ROUTER_MODEL", "gpt-4.1-nano")
+    SIMPLE_MODEL: str = os.getenv("SIMPLE_MODEL", "gpt-4.1-nano")
+    COMPLEX_MODEL: str = os.getenv("COMPLEX_MODEL", "gpt-4.1-mini")
     EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
     
     # --- Paths & Persistence ---

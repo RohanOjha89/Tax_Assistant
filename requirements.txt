@@ -1,34 +1,38 @@
-# --- API & Orchestration ---
+# --- THE "LOCK": PROTECT BINARY COMPATIBILITY ---
+# These MUST be at the top to prevent LangChain from upgrading them
+numpy==1.26.4
+pandas==2.1.4
+
+# --- API & ORCHESTRATION ---
 fastapi>=0.110.0
 uvicorn[standard]>=0.27.0
 pydantic-settings>=2.2.0
 python-dotenv>=1.0.0
 
-# --- LangChain & LLM ---
+# --- LANGCHAIN & LLM ---
 openai>=1.50.0
 langchain>=0.3.0
 langchain-openai
 langchain-community
 langchain_text_splitters
-langchain-chroma  # Specialized wrapper for ChromaDB
+langchain-chroma
 
-# --- Vector Database ---
+# --- VECTOR DATABASE ---
 chromadb>=0.4.0
-pysqlite3-binary  # Fixes the SQLite version issue for ChromaDB on Linux
+pysqlite3-binary
 
-# --- Data Processing ---
-numpy==1.26.4
-pandas==2.1.4
+# --- DATA PROCESSING ---
 pypdf
 sentence-transformers
 
-# --- Testing ---
-pytest
-httpx  # Required for FastAPI's TestClient
-
-# --- AWS Specific ---
-apache-airflow[amazon]
-apache-airflow[postgres]
+# --- AIRFLOW & INFRASTRUCTURE (EXPLICIT) ---
+# Installing the extras automatically brings in boto3 and psycopg2, 
+# but we list them below for safety.
+apache-airflow[amazon,postgres]==2.7.2
 apache-airflow-providers-postgres
-psycopg2-binary
-boto3
+psycopg2-binary>=2.9.0
+boto3>=1.30.0
+
+# --- TESTING ---
+pytest
+httpx

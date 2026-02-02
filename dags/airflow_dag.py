@@ -5,6 +5,7 @@ import sys
 # MUST be at the very top for ChromaDB compatibility in Fargate
 __import__('pysqlite3')
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 import boto3
 from airflow.decorators import dag, task
 from datetime import datetime
