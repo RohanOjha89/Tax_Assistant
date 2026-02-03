@@ -1,5 +1,8 @@
 import sys
 import os
+# Add the directory containing config.py to the system path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from datetime import datetime
 from airflow.decorators import dag, task
 
