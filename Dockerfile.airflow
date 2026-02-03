@@ -26,4 +26,5 @@ RUN pip install --no-cache-dir --user --upgrade pip && \
 # Copy DAGs
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
 
+RUN python -c "import numpy; print('NumPy Version:', numpy.__version__)"
 EXPOSE 8080
