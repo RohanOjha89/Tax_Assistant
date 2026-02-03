@@ -35,7 +35,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build using your specific Airflow Dockerfile
-          docker build -t $ECR_REGISTRY/${ECR_REPO}:$IMAGE_TAG -t $ECR_REGISTRY/${ECR_REPO}:latest -f Dockerfile.airflow .
+          docker build --no-cache -t $ECR_REGISTRY/${ECR_REPO}:$IMAGE_TAG -t $ECR_REGISTRY/${ECR_REPO}:latest -f Dockerfile.airflow .
           
           # Push both tags
           docker push $ECR_REGISTRY/${ECR_REPO}:$IMAGE_TAG
