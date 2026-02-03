@@ -4,21 +4,17 @@ on:
   push:
     branches: [ main ]
 
-# --- MOVE PERMISSIONS HERE ---
-permissions:
-  id-token: write      # Required for OIDC in ALL jobs
-  contents: read       # Required for Checkout
-
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   ECR_REPO: ${{ secrets.ECR_REPO }}
-  ECS_CLUSTER: "airflow-cluster"
-  MAIN_SERVICE: "tax-assistant-task-service-vb2hc16u"
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    # (Removed permissions from here)
+    permissions:
+      id-token: write      # required for OIDC
+      contents: read
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -38,25 +34,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          # Build using your specific Airflow Dockerfile
           docker build --no-cache -t $ECR_REGISTRY/${ECR_REPO}:$IMAGE_TAG -t $ECR_REGISTRY/${ECR_REPO}:latest -f Dockerfile.airflow .
+          
+          # Push both tags
           docker push $ECR_REGISTRY/${ECR_REPO}:$IMAGE_TAG
           docker push $ECR_REGISTRY/${ECR_REPO}:latest
-  
-  deploy-ecs:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    # (Removed permissions from here - it now inherits from the top level)
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Force New Deployment
-        run: |
-          echo "Forcing new deployment for ${{ env.MAIN_SERVICE }}..."
-          aws ecs update-service \
-            --cluster ${{ env.ECS_CLUSTER }} \
-            --service ${{ env.MAIN_SERVICE }} \
-            --force-new-deployment
