@@ -11,12 +11,13 @@ RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 USER airflow
 
 # Set PYTHONPATH
-ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
+ENV PYTHONPATH="/opt/airflow:/opt/airflow/dags:${PYTHONPATH}"
 
 # Copy requirements
 COPY requirements.txt /requirements.txt
 
-RUN pip install --no-cache-dir --user -r /requirements.txt
+# RUN pip install --no-cache-dir -r /requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r /requirements.txt
 
 # Copy DAGs
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
