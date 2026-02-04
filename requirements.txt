@@ -1,5 +1,4 @@
 # --- CORE LIBS ---
-# We let the Airflow 3.1.6 constraints manage the versions of these
 numpy
 pandas
 pysqlite3-binary
@@ -7,14 +6,12 @@ email-validator
 typing-extensions
 
 # --- API & ORCHESTRATION ---
-# Removed the 0.109.1 cap; Airflow 3.x works with the latest FastAPI
 fastapi
 uvicorn[standard]
 pydantic-settings
 python-dotenv
 
 # --- LANGCHAIN & LLM ---
-# Removed the <0.3.0 caps; Airflow 3.x is compatible with LangChain 0.3+
 openai
 langchain
 langchain-openai
@@ -29,9 +26,11 @@ chromadb
 pypdf
 sentence-transformers
 
-# --- AIRFLOW & INFRASTRUCTURE ---
-# Note: We keep the Airflow version here, but your Dockerfile also handles the install
-apache-airflow[amazon,postgres]==3.1.6
+# --- AIRFLOW 3.x CORE & PROVIDERS ---
+# Listing separately avoids the 'bundle' dependency conflicts
+apache-airflow==3.1.6
+apache-airflow-providers-fab
+apache-airflow-providers-amazon
 apache-airflow-providers-postgres
 psycopg2-binary
 boto3
