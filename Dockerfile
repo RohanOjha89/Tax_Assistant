@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y build-essential gcc libpq-dev && rm -rf
 
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt \
+    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.11.txt"
 
 # --- Stage 2: Runtime Stage ---
 FROM python:3.11-slim as runner
