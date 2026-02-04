@@ -10,24 +10,15 @@ RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 
 USER airflow
 
-# --- CACHE BUSTER ---
-# Forces a fresh build to clear any 'ghost' alembic requirements
-# ENV REBUILD_VERSION="2.10.5-v1" 
-
 # Set PYTHONPATH
 ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
 
 # Copy requirements
 COPY requirements.txt /requirements.txt
 
-# THE FIX: Single-line install using the 2.10.5 constraints.
-# RUN pip install --no-cache-dir --user -r /requirements.txt --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.11.txt"
 RUN pip install --no-cache-dir --user -r /requirements.txt
 
 # Copy DAGs
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
-
-# Verify NumPy version during build (Should be 1.26.x)
-RUN python -c "import numpy; print('NumPy Version:', numpy.__version__)"
 
 EXPOSE 8080
