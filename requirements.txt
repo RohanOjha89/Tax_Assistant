@@ -29,6 +29,7 @@ sentence-transformers
 # --- AIRFLOW 2.10.5 CORE & BUNDLE ---
 # Version 2.10.5 is stable and handles the modern NumPy/Pydantic stack
 apache-airflow[amazon,postgres]==2.10.5
+alembic==1.13.3
 psycopg2-binary
 boto3
 
