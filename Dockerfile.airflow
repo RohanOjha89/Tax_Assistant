@@ -1,4 +1,4 @@
-# 1. Update the base image to 3.1.6
+# 1. Base image for Airflow 3.1.6
 FROM apache/airflow:3.1.6-python3.11
 
 USER root
@@ -10,24 +10,24 @@ RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 
 USER airflow
 
-# FIXED: Explicitly declare PYTHONPATH to avoid the UndefinedVar warning in CI
-ARG PYTHONPATH=""
+# Set PYTHONPATH
 ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
 
 # Copy requirements
 COPY requirements.txt /requirements.txt
 
 # THE CRITICAL CHANGE: 
-# We use the --constraint flag to force pip to stick to Airflow-compatible versions.
-# RUN pip install --no-cache-dir --user --upgrade pip && \
-#     pip install --no-cache-dir --user -r /requirements.txt \
-#     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
-
-RUN pip install --no-cache-dir "apache-airflow[amazon,postgres]==3.1.6" \
+# We install Airflow AND your requirements in one single command using the 3.1.6 constraints.
+# This prevents the dependency resolver from getting confused between different versions.
+RUN pip install --no-cache-dir --user \
+    "apache-airflow[amazon,postgres]==3.1.6" \
+    -r /requirements.txt \
     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.1.6/constraints-3.11.txt"
 
 # Copy DAGs
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
 
+# Verify NumPy version during build
 RUN python -c "import numpy; print('NumPy Version:', numpy.__version__)"
+
 EXPOSE 8080

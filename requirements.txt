@@ -1,4 +1,5 @@
-# --- CORE LIBS (Let constraints handle the exact sub-version) ---
+# --- CORE LIBS ---
+# We let the Airflow 3.1.6 constraints manage the versions of these
 numpy
 pandas
 pysqlite3-binary
@@ -6,18 +7,18 @@ email-validator
 typing-extensions
 
 # --- API & ORCHESTRATION ---
-# 0.109.1 is the specific version that supports AnyIO 4.0.0 (required by Airflow 2.7.2)
-fastapi==0.109.1
+# Removed the 0.109.1 cap; Airflow 3.x works with the latest FastAPI
+fastapi
 uvicorn[standard]
 pydantic-settings
 python-dotenv
 
 # --- LANGCHAIN & LLM ---
+# Removed the <0.3.0 caps; Airflow 3.x is compatible with LangChain 0.3+
 openai
-# Capping these is CRITICAL to stay on NumPy 1.x and Pydantic < 2.7
-langchain<0.3.0
+langchain
 langchain-openai
-langchain-community<0.3.0
+langchain-community
 langchain_text_splitters
 langchain-chroma
 
@@ -29,6 +30,7 @@ pypdf
 sentence-transformers
 
 # --- AIRFLOW & INFRASTRUCTURE ---
+# Note: We keep the Airflow version here, but your Dockerfile also handles the install
 apache-airflow[amazon,postgres]==3.1.6
 apache-airflow-providers-postgres
 psycopg2-binary
