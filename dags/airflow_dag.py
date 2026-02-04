@@ -24,7 +24,7 @@ def ingestion_dag():
 
     @task()
     def extract_from_s3(**kwargs):
-        import boto3 # Local import for performance
+        import boto3
         conf = kwargs.get('dag_run').conf or {}
         bucket = conf.get('bucket', 'your-default-bucket')
         key = conf.get('key', 'default-key.pdf')

@@ -1,36 +1,33 @@
-# --- CORE LIBS (Let constraints handle the exact sub-version) ---
+# --- CORE LIBS ---
 numpy
 pandas
+pysqlite3-binary
 email-validator
 typing-extensions
 
 # --- API & ORCHESTRATION ---
-# 0.109.1 is the specific version that supports AnyIO 4.0.0 (required by Airflow 2.7.2)
-fastapi==0.109.1
+fastapi
 uvicorn[standard]
 pydantic-settings
 python-dotenv
 
 # --- LANGCHAIN & LLM ---
 openai
-# Capping these is CRITICAL to stay on NumPy 1.x and Pydantic < 2.7
-langchain<0.3.0
+langchain
 langchain-openai
-langchain-community<0.3.0
+langchain-community
 langchain_text_splitters
 langchain-chroma
 
 # --- VECTOR DATABASE ---
 chromadb
-pysqlite3-binary
 
 # --- DATA PROCESSING ---
 pypdf
 sentence-transformers
 
-# --- AIRFLOW & INFRASTRUCTURE ---
-apache-airflow[amazon,postgres]==2.7.2
-apache-airflow-providers-postgres
+# --- AIRFLOW CORE & BUNDLE ---
+apache-airflow[amazon,postgres]
 psycopg2-binary
 boto3
 
