@@ -10,6 +10,10 @@ RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 
 USER airflow
 
+# --- CACHE BUSTER ---
+# Changing this string forces Docker to re-run everything below it
+ENV REBUILD_VERSION="3.1.6-v1" 
+
 # Set PYTHONPATH
 ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
 
@@ -17,8 +21,7 @@ ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
 COPY requirements.txt /requirements.txt
 
 # THE CRITICAL CHANGE: 
-# We install Airflow AND your requirements in one single command using the 3.1.6 constraints.
-# This prevents the dependency resolver from getting confused between different versions.
+# Using the single-line install with 3.1.6 constraints
 RUN pip install --no-cache-dir --user \
     "apache-airflow[amazon,postgres]==3.1.6" \
     -r /requirements.txt \
