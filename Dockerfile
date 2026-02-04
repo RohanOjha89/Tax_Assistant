@@ -10,8 +10,11 @@ COPY requirements.txt .
 
 # FIXED: We use the same constraint file here as we did in Airflow!
 # This ensures that both containers are "speaking the same language" (NumPy 1.x).
-RUN pip install --user --no-cache-dir -r requirements.txt \
-    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
+# RUN pip install --user --no-cache-dir -r requirements.txt \
+#     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
+
+RUN pip install --no-cache-dir "apache-airflow[amazon,postgres]==3.1.6" \
+    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.1.6/constraints-3.11.txt"
 
 # --- Stage 2: Runtime Stage ---
 FROM python:3.11-slim as runner

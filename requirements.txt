@@ -1,6 +1,7 @@
 # --- CORE LIBS (Let constraints handle the exact sub-version) ---
 numpy
 pandas
+pysqlite3-binary
 email-validator
 typing-extensions
 
@@ -22,14 +23,13 @@ langchain-chroma
 
 # --- VECTOR DATABASE ---
 chromadb
-pysqlite3-binary
 
 # --- DATA PROCESSING ---
 pypdf
 sentence-transformers
 
 # --- AIRFLOW & INFRASTRUCTURE ---
-apache-airflow[amazon,postgres]==2.7.2
+apache-airflow[amazon,postgres]==3.1.6
 apache-airflow-providers-postgres
 psycopg2-binary
 boto3

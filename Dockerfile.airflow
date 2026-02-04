@@ -1,5 +1,5 @@
-# Use official Apache Airflow image
-FROM apache/airflow:2.7.2-python3.11
+# 1. Update the base image to 3.1.6
+FROM apache/airflow:3.1.6-python3.11
 
 USER root
 # Basic dependencies
@@ -19,9 +19,12 @@ COPY requirements.txt /requirements.txt
 
 # THE CRITICAL CHANGE: 
 # We use the --constraint flag to force pip to stick to Airflow-compatible versions.
-RUN pip install --no-cache-dir --user --upgrade pip && \
-    pip install --no-cache-dir --user -r /requirements.txt \
-    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
+# RUN pip install --no-cache-dir --user --upgrade pip && \
+#     pip install --no-cache-dir --user -r /requirements.txt \
+#     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.7.2/constraints-3.11.txt"
+
+RUN pip install --no-cache-dir "apache-airflow[amazon,postgres]==3.1.6" \
+    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.1.6/constraints-3.11.txt"
 
 # Copy DAGs
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
