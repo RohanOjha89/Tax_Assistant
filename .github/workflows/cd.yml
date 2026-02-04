@@ -29,17 +29,27 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Clear Docker build cache (prevent stale layers)
+        run: docker builder prune --all --force
+
       - name: Build and Push Airflow Image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build with no-cache to ensure the new Airflow 3.1.6 
-          # and Alembic fixes are cleanly applied.
-          docker build --no-cache \
-            -t $ECR_REGISTRY/${ECR_REPO}:$IMAGE_TAG \
-            -t $ECR_REGISTRY/${ECR_REPO}:latest \
-            -f Dockerfile.airflow .
-          
-          docker push $ECR_REGISTRY/${ECR_REPO}:$IMAGE_TAG
-          docker push $ECR_REGISTRY/${ECR_REPO}:latest
+          docker buildx create --use --name mybuilder || true
+          docker buildx inspect --bootstrap
+
+          docker buildx build \
+            --no-cache \
+            --pull \
+            --push \
+            --platform linux/amd64 \
+            -t "${ECR_REGISTRY}/${{ env.ECR_REPO }}:${IMAGE_TAG}" \
+            -t "${ECR_REGISTRY}/${{ env.ECR_REPO }}:latest" \
+            -f Dockerfile.airflow \
+            .
+
+      - name: Logout from ECR (optional but good practice)
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}

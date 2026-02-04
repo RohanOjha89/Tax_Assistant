@@ -26,8 +26,7 @@ chromadb
 pypdf
 sentence-transformers
 
-# --- AIRFLOW 2.10.5 CORE & BUNDLE ---
-# Version 2.10.5 is stable and handles the modern NumPy/Pydantic stack
+# --- AIRFLOW CORE & BUNDLE ---
 apache-airflow[amazon,postgres]
 psycopg2-binary
 boto3

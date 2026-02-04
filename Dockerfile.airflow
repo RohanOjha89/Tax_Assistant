@@ -12,7 +12,7 @@ USER airflow
 
 # --- CACHE BUSTER ---
 # Forces a fresh build to clear any 'ghost' alembic requirements
-ENV REBUILD_VERSION="2.10.5-v1" 
+# ENV REBUILD_VERSION="2.10.5-v1" 
 
 # Set PYTHONPATH
 ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
@@ -21,9 +21,8 @@ ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
 COPY requirements.txt /requirements.txt
 
 # THE FIX: Single-line install using the 2.10.5 constraints.
-RUN pip install --no-cache-dir --user \
-    -r /requirements.txt \
-    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.11.txt"
+# RUN pip install --no-cache-dir --user -r /requirements.txt --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.11.txt"
+RUN pip install --no-cache-dir --user -r /requirements.txt
 
 # Copy DAGs
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
