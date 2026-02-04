@@ -1,5 +1,5 @@
-# 1. Base image for Airflow 3.1.6
-FROM apache/airflow:3.1.6-python3.11
+# 1. Base image for Airflow 2.10.5
+FROM apache/airflow:2.10.5-python3.11
 
 USER root
 # Basic dependencies
@@ -11,8 +11,8 @@ RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 USER airflow
 
 # --- CACHE BUSTER ---
-# Forces a fresh build to clear any 'ghost' alembic 1.12.0 requirements
-ENV REBUILD_VERSION="3.1.6-vFINAL" 
+# Forces a fresh build to clear any 'ghost' alembic requirements
+ENV REBUILD_VERSION="2.10.5-v1" 
 
 # Set PYTHONPATH
 ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
@@ -20,16 +20,15 @@ ENV PYTHONPATH="/opt/airflow/dags:${PYTHONPATH}"
 # Copy requirements
 COPY requirements.txt /requirements.txt
 
-# THE FIX: Single-line install using the 3.1.6 constraints.
-# This aligns Core, FAB, and your Providers on a compatible Alembic version.
+# THE FIX: Single-line install using the 2.10.5 constraints.
 RUN pip install --no-cache-dir --user \
     -r /requirements.txt \
-    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.1.6/constraints-3.11.txt"
+    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.11.txt"
 
 # Copy DAGs
 COPY --chown=airflow:root dags/ /opt/airflow/dags/
 
-# Verify NumPy version during build (Should be 1.26.x or 2.x for Airflow 3.x)
+# Verify NumPy version during build (Should be 1.26.x)
 RUN python -c "import numpy; print('NumPy Version:', numpy.__version__)"
 
 EXPOSE 8080

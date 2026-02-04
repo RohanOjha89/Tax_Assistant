@@ -8,12 +8,10 @@ RUN apt-get update && apt-get install -y build-essential gcc libpq-dev && rm -rf
 
 COPY requirements.txt .
 
-# THE CHANGE: We remove the manual "apache-airflow[...]" string here.
-# Since apache-airflow and its providers are NOW inside your requirements.txt,
-# pip will install them all together using the 3.1.6 constraints.
+# Use the 2.10.5 constraints to ensure binary compatibility
 RUN pip install --user --no-cache-dir \
     -r requirements.txt \
-    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.1.6/constraints-3.11.txt"
+    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.11.txt"
 
 # --- Stage 2: Runtime Stage ---
 FROM python:3.11-slim as runner
