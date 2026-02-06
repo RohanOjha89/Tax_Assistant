@@ -13,13 +13,19 @@ try:
 except ImportError:
     pass
 
+
 @dag(
     dag_id='tax_doc_ingestion_dag',
     schedule_interval=None,
     start_date=datetime(2026, 1, 1),
     catchup=False,
-    tags=['ingestion', 'chromadb']
+    tags=['ingestion', 'chromadb'],
+    params={
+        "bucket": Param("roh-tax-assistant", type="string"),
+        "key": Param("example_file.pdf", type="string")
+    }
 )
+
 def ingestion_dag():
 
     @task()
