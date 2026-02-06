@@ -25,9 +25,20 @@ def ingestion_dag():
     @task()
     def extract_from_s3(**kwargs):
         import boto3
+        import os
+        
+        # Get configuration from the trigger
         conf = kwargs.get('dag_run').conf or {}
-        bucket = conf.get('bucket', 'your-default-bucket')
-        key = conf.get('key', 'default-key.pdf')
+        
+        # REPLACE THESE with your actual bucket name
+        bucket = conf.get('bucket', 'roh-tax-assistant')
+        key = conf.get('key')
+        
+        if not key:
+            raise ValueError("No S3 'key' provided in DAG configuration!")
+            
+        print(f"Downloading from Bucket: {bucket}, Key: {key}")
+        
         local_path = f"/tmp/{os.path.basename(key)}"
         
         s3 = boto3.client('s3')
