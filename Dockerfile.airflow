@@ -10,6 +10,13 @@ RUN mkdir -p /opt/airflow/chroma_db && chown -R airflow: /opt/airflow/chroma_db
 
 USER airflow
 
+# 1. Copy root-level files first
+# This ensures config.py is placed in /opt/airflow
+COPY --chown=airflow:root config.py main.py /opt/airflow/
+
+# 2. Copy the dags folder
+COPY --chown=airflow:root dags/ /opt/airflow/dags/
+
 # Set PYTHONPATH
 ENV PYTHONPATH="/opt/airflow:/opt/airflow/dags:${PYTHONPATH}"
 

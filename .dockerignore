@@ -1,0 +1,5 @@
+.github/
+tests/
+chroma_db/
+__pycache__/
+.git/
