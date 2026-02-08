@@ -60,6 +60,7 @@ def ingestion_dag():
 
     @task()
     def generate_embeddings(texts: list):
+        sys.path.insert(0, '/opt/airflow')
         from src.embedding_generation import EmbeddingEngine
         from config import settings
         
