@@ -1,5 +1,6 @@
 import sys
 import os
+from airflow.models.param import Param
 # Add the directory containing config.py to the system path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -13,7 +14,6 @@ try:
 except ImportError:
     pass
 
-
 @dag(
     dag_id='tax_doc_ingestion_dag',
     schedule_interval=None,
@@ -21,8 +21,8 @@ except ImportError:
     catchup=False,
     tags=['ingestion', 'chromadb'],
     params={
-        "bucket": Param("roh-tax-assistant", type="string"),
-        "key": Param("example_file.pdf", type="string")
+        "bucket": Param("roh-tax-assistant", type="string", title="S3 Bucket"),
+        "key": Param("example_file.pdf", type="string", title="File Key (Path)")
     }
 )
 
