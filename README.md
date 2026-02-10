@@ -23,11 +23,11 @@ The Data Ingestion Flow:
 * CI/CD: GitHub Actions (Automated Docker builds & ECS deployments).
 
 ## Security & CI/CD (GitHub Actions)
-We use GitHub Actions to manage the lifecycle of our containers. Secrets are never hardcoded; they are managed through GitHub Secrets and AWS Secrets Manager.
+I have used GitHub Actions to manage the lifecycle of our containers. Secrets are never hardcoded; they are managed through GitHub Secrets and AWS Secrets Manager.
 
 ### GitHub Secrets & Variables:
 * AWS_REGION / ECR_REPO_URI: Used to dynamically tag and push images to the correct regional registry.
-* AWS_ROLE_ARN: We use OIDC (OpenID Connect) to allow GitHub Actions to assume a temporary AWS role. This is more secure than using long-lived IAM keys.
+* AWS_ROLE_ARN: I have used OIDC (OpenID Connect) to allow GitHub Actions to assume a temporary AWS role. This is more secure than using long-lived IAM keys.
 
 ### AWS Secrets Manager:
 * OpenAI API Key: Sensitive keys for embedding and LLM generation.
