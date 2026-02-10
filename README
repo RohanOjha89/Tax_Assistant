@@ -1,0 +1,2 @@
+## TaxAssist-LLMOps: Semantic Router & RAG Pipeline
+A production-ready LLMOps project that automates the ingestion, embedding, and retrieval of complex tax documents. This system uses a Semantic Router to intelligently handle user queries and a RAG (Retrieval-Augmented Generation) pipeline to provide grounded answers from a persistent vector store.
