@@ -3,6 +3,9 @@ name: CD Pipeline - Build and Push to ECR
 on:
   push:
     branches: [ main ]
+  paths-ignore:
+    - 'README.md'
+    - '.gitignore'
 
 permissions:
   id-token: write
